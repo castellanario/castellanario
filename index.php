@@ -54,12 +54,12 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
 
     $recaptcha_is_valid = verify_recaptcha($_POST["g-recaptcha-response"]);
 
-    $term = $db_connection->real_escape_string($_POST['term']);
+    $term = $db_connection->real_escape_string(cleanup_string($_POST['term']));
     $term_slug = slugify($term);
-    $region = $db_connection->real_escape_string($_POST['region']);
+    $region = $db_connection->real_escape_string(cleanup_string($_POST['region']));
     $region_slug = slugify($region);
-    $explanation = $db_connection->real_escape_string($_POST['explanation']);
-    $example = $db_connection->real_escape_string($_POST['example']);
+    $explanation = $db_connection->real_escape_string(cleanup_string($_POST['explanation']));
+    $example = $db_connection->real_escape_string(cleanup_string($_POST['example']));
 
     if ($recaptcha_is_valid) {
         if (!$db_connection->query("INSERT INTO `castellanario` (`term`, `term_slug`, `region`, `region_slug`, `explanation`, `example`) VALUES ('" . $term . "', '" . $term_slug . "', '" . $region . "', '" . $region_slug . "', '" . $explanation . "', '" . $example . "')")) {
@@ -176,7 +176,7 @@ if ($action === 'show-random') {
             ul {
                 list-style: none;
                 max-width: 560px;
-                word-break: break-all;
+                overflow-x: hidden;
                 display: flex;
                 flex-direction: column;
                 gap: 3rem;
@@ -401,4 +401,8 @@ function redirect_to_home()
 {
     header('Location: /');
     exit;
+}
+
+function cleanup_string($string){
+    return htmlentities(strip_tags($string));
 }
