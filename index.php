@@ -66,6 +66,7 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
             echo("Error description: " . $db_connection->error);
             exit;
         }
+        mail('castellanario@gmail.com', 'Nuevo término: ' . $term, $region . "\n" . $explanation . "\n" . $example);
         header('Location: /' . $term_slug . '/mas-recientes');
         exit;
     }
