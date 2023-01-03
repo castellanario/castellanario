@@ -288,13 +288,13 @@ if ($action === 'show-random') {
                 </div>
 
                 <div>
-                    <label for="explanation">Explanation</label>
+                    <label for="explanation">Explicación</label>
                     <textarea required minlength="40" name="explanation" id="explanation"
                               placeholder="Ej: Dícese de la persona que no sabe ni donde tiene la cara."></textarea>
                 </div>
 
                 <div>
-                    <label for="example">Example</label>
+                    <label for="example">Ejemplo</label>
                     <textarea required minlength="40" name="example" id="example"
                               placeholder="Ej: Kiyo Paco, no veas si estás empanao hoy colega...!"></textarea>
                 </div>
