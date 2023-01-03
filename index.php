@@ -50,16 +50,16 @@ $db_connection->select_db(DB_NAME);
 */
 
 // Are we trying to add a term?
-if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POST['region']) > 2) and (strlen($_POST['term']) < 101) and (strlen($_POST['region']) < 41) and (strlen($_POST['explanation']) > 40) and (strlen($_POST['example']) > 40) and (!empty($_POST['g-recaptcha-response']))) {
+if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POST['region']) > 2) and (strlen($_POST['term']) < 101) and (strlen($_POST['region']) < 41) and (strlen(normalize_whitespace($_POST['explanation'])) > 25) and (strlen(normalize_whitespace($_POST['example'])) > 25) and (!empty($_POST['g-recaptcha-response']))) {
 
     $recaptcha_is_valid = verify_recaptcha($_POST["g-recaptcha-response"]);
 
-    $term = $db_connection->real_escape_string(cleanup_string($_POST['term']));
+    $term = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['term'])));
     $term_slug = slugify($term);
-    $region = $db_connection->real_escape_string(cleanup_string($_POST['region']));
+    $region = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['region'])));
     $region_slug = slugify($region);
-    $explanation = $db_connection->real_escape_string(cleanup_string($_POST['explanation']));
-    $example = $db_connection->real_escape_string(cleanup_string($_POST['example']));
+    $explanation = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['explanation'])));
+    $example = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['example'])));
 
     if ($recaptcha_is_valid) {
         if (!$db_connection->query("INSERT INTO `castellanario` (`term`, `term_slug`, `region`, `region_slug`, `explanation`, `example`) VALUES ('" . $term . "', '" . $term_slug . "', '" . $region . "', '" . $region_slug . "', '" . $explanation . "', '" . $example . "')")) {
@@ -309,8 +309,8 @@ if ($action === 'show-random') {
                 echo '
                 <li>
                     <h2>' . $title_html . '</h2>
-                    <p>' . $term_data['explanation'] . '</p>
-                    <p>' . $term_data['example'] . '</p>
+                    <p>' . nl2br($term_data['explanation']) . '</p>
+                    <p>' . nl2br($term_data['example']) . '</p>
                     <p>' . $region_html . '</p>
                 </li>
                 ';
@@ -405,4 +405,9 @@ function redirect_to_home()
 
 function cleanup_string($string){
     return htmlentities(strip_tags($string));
+}
+
+function normalize_whitespace($string){
+    $string = preg_replace('/\s+/', ' ', $string);
+    return preg_replace('/(\r\n|\r|\n)+/', "\n", $string);
 }
