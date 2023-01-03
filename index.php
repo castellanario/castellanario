@@ -173,6 +173,7 @@ if ($action === 'show-random') {
                 font-family: Dosis, sans-serif;
                 padding: 4rem;
                 font-size: 17px;
+                color: #111;
             }
 
             * {
@@ -181,7 +182,7 @@ if ($action === 'show-random') {
                 box-sizing: border-box;
             }
 
-            body, a, a:hover, a:visited, a:active {
+            a {
                 color: #111;
                 text-decoration: none;
             }
@@ -237,6 +238,19 @@ if ($action === 'show-random') {
             textarea {
                 height: 10rem;
                 resize: vertical;
+            }
+
+            .tag {
+                display: inline-block;
+                background-color: #222;
+                color: #FFF;
+                padding: 0.5rem 1.2rem;
+                border-radius: 1rem;
+                font-size: 14px;
+            }
+
+            .tag:hover{
+                background-color: #111;
             }
 
             .privacy {
@@ -323,17 +337,16 @@ if ($action === 'show-random') {
                 } else {
                     $title_html = $term_data['term'];
                 }
+                $region_html = '';
                 if ($action !== 'show-region-terms') {
-                    $region_html = '<a href="/region/' . $term_data['region_slug'] . '">' . $term_data['region'] . '</a>';
-                } else {
-                    $region_html = $term_data['region'];
+                    $region_html = '<p><a class="tag" href="/region/' . $term_data['region_slug'] . '">' . $term_data['region'] . '</a></p>';
                 }
                 echo '
             <li>
                 <h2>' . $title_html . '</h2>
                 <p>' . nl2br($term_data['explanation']) . '</p>
                 <p>' . nl2br($term_data['example']) . '</p>
-                <p>' . $region_html . '</p>
+                ' . $region_html . '
             </li>
             ';
             }
