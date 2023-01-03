@@ -55,9 +55,9 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
     $recaptcha_is_valid = verify_recaptcha($_POST["g-recaptcha-response"]);
 
     $term = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['term'])));
-    $term_slug = slugify($term);
+    $term_slug = slugify($_POST['term']);
     $region = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['region'])));
-    $region_slug = slugify($region);
+    $region_slug = slugify($_POST['region']);
     $explanation = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['explanation'])));
     $example = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['example'])));
 
