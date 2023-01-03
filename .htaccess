@@ -1,0 +1,9 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteRule ^agregar$ ./index.php?action=add-term [L]
+RewriteRule ^privacidad$ ./index.php?action=privacy [L]
+RewriteRule ^region/([0-9-a-z]+)$ ./index.php?action=show-region-terms&region-slug=$1 [L]
+RewriteRule ^region/([0-9-a-z]+)/([-a-z]+)$ ./index.php?action=show-region-terms&region-slug=$1&order=$2 [L]
+RewriteRule ^([0-9-a-z]+)$ ./index.php?action=show-single-term&term-slug=$1 [L]
+RewriteRule ^([0-9-a-z]+)/([-a-z]+)$ ./index.php?action=show-single-term&term-slug=$1&order=$2 [L]
