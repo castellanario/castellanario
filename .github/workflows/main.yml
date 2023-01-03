@@ -21,3 +21,5 @@ jobs:
           .ddev
           .ddev/**
           config.php
+          LICENSE
+          README.md
