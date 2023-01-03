@@ -11,7 +11,7 @@ jobs:
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
-        server: ftp.castellanario.com
+        server: castellanario.com
         port: 21
         username: ftp_castellanario.com
         password: ${{ secrets.FTP_PASSWORD }}
