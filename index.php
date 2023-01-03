@@ -94,10 +94,12 @@ if (isset($_GET['order'])) {
 
 /* Determine current action */
 $action = 'show-random';
+$html_title = 'Castellanario | Diccionario de Castellano';
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'add-term':
             $action = 'add-term';
+            $html_title = 'Añadir palabra o expresión | Castellanario';
             break;
         case 'show-single-term':
             $action = 'show-single-term';
@@ -107,6 +109,11 @@ if (isset($_GET['action'])) {
                 if ($returned_terms->num_rows === 0) {
                     redirect_to_home();
                 }
+                $terms_data = array();
+                while ($term_data = $returned_terms->fetch_assoc()) {
+                    $terms_data[] = $term_data;
+                }
+                $html_title = 'Significado de ' . $terms_data[0]['term'] . ' | Castellanario';
             } else {
                 redirect_to_home();
             }
@@ -119,6 +126,11 @@ if (isset($_GET['action'])) {
                 if ($returned_terms->num_rows === 0) {
                     redirect_to_home();
                 }
+                $terms_data = array();
+                while ($term_data = $returned_terms->fetch_assoc()) {
+                    $terms_data[] = $term_data;
+                }
+                $html_title = 'Palabras y expresiones de ' . $terms_data[0]['region'] . ' | Castellanario';
             } else {
                 redirect_to_home();
             }
@@ -132,6 +144,10 @@ if (isset($_GET['action'])) {
 }
 if ($action === 'show-random') {
     $returned_terms = $db_connection->query("SELECT * FROM `castellanario` ORDER BY RAND() LIMIT 10");
+    $terms_data = array();
+    while ($term_data = $returned_terms->fetch_assoc()) {
+        $terms_data[] = $term_data;
+    }
 }
 
 /* Print HTML header with very simple CSS styles */
@@ -139,6 +155,8 @@ if ($action === 'show-random') {
 
     <html>
     <head>
+        <meta charset="utf-8">
+        <title><?php echo $html_title; ?></title>
         <style>
             @font-face {
                 font-family: 'Dosis';
@@ -295,7 +313,7 @@ if ($action === 'show-random') {
         case 'show-single-term':
         case 'show-region-terms':
             echo '<ul>';
-            while ($term_data = $returned_terms->fetch_assoc()) {
+            foreach ($terms_data as $term_data) {
                 if ($action !== 'show-single-term') {
                     $title_html = '<a href="/' . $term_data['term_slug'] . '">' . $term_data['term'] . '</a>';
                 } else {
