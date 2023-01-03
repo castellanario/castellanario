@@ -10,9 +10,9 @@ CREATE TABLE `castellanario` (
   `term_slug` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `region` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `region_slug` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `upvotes` bigint UNSIGNED NOT NULL,
-  `downvotes` bigint UNSIGNED NOT NULL,
-  `flags` int UNSIGNED NOT NULL,
+  `upvotes` bigint UNSIGNED NOT NULL DEFAULT '0',
+  `downvotes` bigint UNSIGNED NOT NULL DEFAULT '0',
+  `flags` int UNSIGNED NOT NULL DEFAULT '5',
   `explanation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `example` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -66,7 +66,7 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
             echo("Error description: " . $db_connection->error);
             exit;
         }
-        header('Location: /' . $term_slug . '/mas-recientes/');
+        header('Location: /' . $term_slug . '/mas-recientes');
         exit;
     }
 }
