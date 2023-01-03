@@ -190,6 +190,8 @@ if ($action === 'show-random') {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
+                margin-bottom: 4rem;
+                align-items: center;
             }
 
             ul {
@@ -206,10 +208,6 @@ if ($action === 'show-random') {
                 flex-direction: column;
                 line-height: 1.4;
                 gap: 1rem;
-            }
-
-            h1 {
-                margin-bottom: 4rem;
             }
 
             h2 {
@@ -234,6 +232,11 @@ if ($action === 'show-random') {
 
             input, textarea {
                 padding: 1rem;
+            }
+
+            textarea {
+                height: 10rem;
+                resize: vertical;
             }
 
             .privacy {
@@ -326,13 +329,13 @@ if ($action === 'show-random') {
                     $region_html = $term_data['region'];
                 }
                 echo '
-                <li>
-                    <h2>' . $title_html . '</h2>
-                    <p>' . nl2br($term_data['explanation']) . '</p>
-                    <p>' . nl2br($term_data['example']) . '</p>
-                    <p>' . $region_html . '</p>
-                </li>
-                ';
+            <li>
+                <h2>' . $title_html . '</h2>
+                <p>' . nl2br($term_data['explanation']) . '</p>
+                <p>' . nl2br($term_data['example']) . '</p>
+                <p>' . $region_html . '</p>
+            </li>
+            ';
             }
             echo '</ul>';
             break;
@@ -350,7 +353,8 @@ if ($action === 'show-random') {
 
     ?>
     <footer>
-        <a href="/privacidad">Privacidad</a> - <a href="https://www.instagram.com/castellanario">Insta</a> - <a href="https://twitter.com/castellanario">Twitter</a>
+        <a href="/privacidad">Privacidad</a> - <a href="https://www.instagram.com/castellanario">Insta</a> - <a
+                href="https://twitter.com/castellanario">Twitter</a>
     </footer>
     </body>
     </html>
@@ -359,42 +363,25 @@ if ($action === 'show-random') {
 
 function verify_recaptcha($token)
 {
-    # La API en donde verificamos el token
-    $url = "https://www.google.com/recaptcha/api/siteverify";
-    # Los datos que enviamos a Google
-    $datos = [
+    $recaptcha_endpoint = "https://www.google.com/recaptcha/api/siteverify";
+    $recaptcha_data = [
         "secret" => RECAPTCHA_SECRET_KEY,
         "response" => $token,
     ];
-    // Crear opciones de la petición HTTP
-    $opciones = array(
+    $request_options = array(
         "http" => array(
             "header" => "Content-type: application/x-www-form-urlencoded\r\n",
             "method" => "POST",
-            "content" => http_build_query($datos), # Agregar el contenido definido antes
+            "content" => http_build_query($recaptcha_data), # Agregar el contenido definido antes
         ),
     );
-    # Preparar petición
-    $contexto = stream_context_create($opciones);
-    # Hacerla
-    $resultado = file_get_contents($url, false, $contexto);
-    # Si hay problemas con la petición (por ejemplo, que no hay internet o algo así)
-    # entonces se regresa false. Este NO es un problema con el captcha, sino con la conexión
-    # al servidor de Google
-    if ($resultado === false) {
-        # Error haciendo petición
+    $contexto = stream_context_create($request_options);
+    $request_result = file_get_contents($recaptcha_endpoint, false, $contexto);
+    if ($request_result === false) {
         return false;
     }
-
-    # En caso de que no haya regresado false, decodificamos con JSON
-    # https://parzibyte.me/blog/2018/12/26/codificar-decodificar-json-php/
-
-    $resultado = json_decode($resultado);
-    # La variable que nos interesa para saber si el usuario pasó o no la prueba
-    # está en success
-    $pruebaPasada = $resultado->success;
-    # Regresamos ese valor, y listo (sí, ya sé que se podría regresar $resultado->success)
-    return $pruebaPasada;
+    $request_result = json_decode($request_result);
+    return $request_result->success;
 }
 
 function slugify($text)
@@ -422,11 +409,13 @@ function redirect_to_home()
     exit;
 }
 
-function cleanup_string($string){
+function cleanup_string($string)
+{
     return htmlentities(strip_tags($string));
 }
 
-function normalize_whitespace($string){
+function normalize_whitespace($string)
+{
     $string = preg_replace('/\s+/', ' ', $string);
     return preg_replace('/(\r\n|\r|\n)+/', "\n", $string);
 }
