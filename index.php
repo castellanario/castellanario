@@ -178,8 +178,8 @@ if ($action === 'show-random') {
 
             body {
                 font-family: Dosis, sans-serif;
-                padding: 6rem;
-                font-size: 20px;
+                padding: 3rem;
+                font-size: 17px;
                 color: #111;
             }
 
@@ -198,7 +198,7 @@ if ($action === 'show-random') {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin-bottom: 10rem;
+                margin-bottom: 4rem;
                 align-items: center;
             }
 
@@ -228,7 +228,7 @@ if ($action === 'show-random') {
 
             h2 {
                 font-family: SpecialElite, sans-serif;
-                font-size: 60px;
+                font-size: 25px;
             }
 
             form {
@@ -280,6 +280,34 @@ if ($action === 'show-random') {
             footer {
                 margin-top: 4rem;
                 text-align: center;
+            }
+
+            @media (min-width: 800px){
+                body {
+                    padding: 4rem;
+                    font-size: 18px;
+                }
+                header {
+                    margin-bottom: 6rem;
+                }
+                h2 {
+                    font-family: SpecialElite, sans-serif;
+                    font-size: 40px;
+                }
+            }
+
+            @media (min-width: 1100px){
+                body {
+                    padding: 6rem;
+                    font-size: 20px;
+                }
+                header {
+                    margin-bottom: 10rem;
+                }
+                h2 {
+                    font-family: SpecialElite, sans-serif;
+                    font-size: 60px;
+                }
             }
         </style>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
