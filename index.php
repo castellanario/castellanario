@@ -54,12 +54,12 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
 
     $recaptcha_is_valid = verify_recaptcha($_POST["g-recaptcha-response"]);
 
-    $term = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['term'])));
+    $term = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['term'])));
     $term_slug = slugify($_POST['term']);
-    $region = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['region'])));
+    $region = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['region'])));
     $region_slug = slugify($_POST['region']);
-    $explanation = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['explanation'])));
-    $example = $db_connection->real_escape_string(cleanup_string(normalize_whitespace($_POST['example'])));
+    $explanation = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['explanation'])));
+    $example = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['example'])));
 
     if ($recaptcha_is_valid) {
         if (!$db_connection->query("INSERT INTO `castellanario` (`term`, `term_slug`, `region`, `region_slug`, `explanation`, `example`) VALUES ('" . $term . "', '" . $term_slug . "', '" . $region . "', '" . $region_slug . "', '" . $explanation . "', '" . $example . "')")) {
@@ -475,11 +475,6 @@ function redirect_to_home()
 {
     header('Location: /');
     exit;
-}
-
-function cleanup_string($string)
-{
-    return htmlentities(strip_tags($string));
 }
 
 function normalize_whitespace($string)
