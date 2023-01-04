@@ -196,10 +196,10 @@ if ($action === 'show-random') {
 
             header {
                 display: flex;
-                flex-direction: row;
-                justify-content: space-between;
+                flex-direction: column;
                 margin-bottom: 4rem;
                 align-items: center;
+                gap: 2rem;
             }
 
             ul {
@@ -288,6 +288,8 @@ if ($action === 'show-random') {
                     font-size: 18px;
                 }
                 header {
+                    flex-direction: row;
+                    justify-content: space-between;
                     margin-bottom: 6rem;
                 }
                 h2 {
@@ -326,9 +328,9 @@ if ($action === 'show-random') {
         <h1><a href="/">Castellanario<span>.com</span></a></h1>
         <?php
         if ($action === 'add-term') {
-            echo '<a href="/">Cancelar</a>';
+            echo '<a class="tag" href="/">Cancelar</a>';
         } else {
-            echo '<a href="/agregar">Agregar</a>';
+            echo '<a class="tag" href="/agregar">Añadir palabra o expresión</a>';
         }
         ?>
     </header>
