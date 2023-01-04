@@ -178,8 +178,8 @@ if ($action === 'show-random') {
 
             body {
                 font-family: Dosis, sans-serif;
-                padding: 4rem;
-                font-size: 17px;
+                padding: 6rem;
+                font-size: 20px;
                 color: #111;
             }
 
@@ -198,33 +198,42 @@ if ($action === 'show-random') {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin-bottom: 4rem;
+                margin-bottom: 10rem;
                 align-items: center;
             }
 
             ul {
                 list-style: none;
-                max-width: 560px;
+                max-width: 500px;
                 overflow-x: hidden;
                 display: flex;
                 flex-direction: column;
-                gap: 3rem;
+                gap: 6rem;
             }
 
             li {
                 display: flex;
                 flex-direction: column;
                 line-height: 1.4;
-                gap: 1rem;
+                gap: 2rem;
+            }
+
+            h1 {
+                font-family: SpecialElite, sans-serif;
+            }
+
+            h1 span{
+                color: #999;
             }
 
             h2 {
                 font-family: SpecialElite, sans-serif;
+                font-size: 60px;
             }
 
             form {
                 display: flex;
-                max-width: 560px;
+                max-width: 500px;
                 flex-direction: column;
                 gap: 2rem;
             }
@@ -264,7 +273,7 @@ if ($action === 'show-random') {
                 display: flex;
                 flex-direction: column;
                 gap: 1rem;
-                max-width: 560px;
+                max-width: 500px;
             }
 
             footer {
@@ -285,7 +294,7 @@ if ($action === 'show-random') {
     <body>
 
     <header>
-        <h1><a href="/">Castellanario</a></h1>
+        <h1><a href="/">Castellanario<span>.com</span></a></h1>
         <?php
         if ($action === 'add-term') {
             echo '<a href="/">Cancelar</a>';
