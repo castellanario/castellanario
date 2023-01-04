@@ -359,8 +359,8 @@ if ($action === 'show-random') {
                 echo '
             <li>
                 <h2>' . $title_html . '</h2>
-                <p>' . nl2br($term_data['explanation']) . '</p>
-                <p>' . nl2br($term_data['example']) . '</p>
+                <p>' . $term_data['explanation'] . '</p>
+                <p>' . $term_data['example'] . '</p>
                 ' . $region_html . '
             </li>
             ';
@@ -445,5 +445,5 @@ function cleanup_string($string)
 function normalize_whitespace($string)
 {
     $string = preg_replace('/\s+/', ' ', $string);
-    return preg_replace('/(\r\n|\r|\n)+/', "\n", $string);
+    return preg_replace('/(\r\n|\r|\n)+/', '', $string);
 }
