@@ -150,7 +150,7 @@ if (isset($_GET['action'])) {
     }
 }
 if ($action === 'show-random') {
-    $returned_terms = $db_connection->query("SELECT * FROM `castellanario` ORDER BY RAND() LIMIT 10");
+    $returned_terms = $db_connection->query("SELECT * FROM `castellanario` ORDER BY RAND() LIMIT 100");
     $terms_data = array();
     while ($term_data = $returned_terms->fetch_assoc()) {
         $terms_data[] = $term_data;
