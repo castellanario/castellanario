@@ -263,6 +263,7 @@ if ($action === 'show-random') {
                 padding: 0.5rem 1.2rem;
                 border-radius: 1rem;
                 font-size: 14px;
+                letter-spacing: 0.1rem;
             }
 
             .tag:hover{
