@@ -321,8 +321,6 @@ if ($action === 'show-random') {
             gtag('js', new Date());
             gtag('config', 'G-J2JFKPHKCZ');
         </script>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3044831242285145"
-                crossorigin="anonymous"></script>
     </head>
     <body>
 
