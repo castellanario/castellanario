@@ -44,6 +44,9 @@ if ($db_connection->connect_error) {
 
 $db_connection->select_db(DB_NAME);
 
+// Set charset
+$db_connection->set_charset('utf8mb4');
+
 /* Perform POST actions
 - Should post a new term? (validate and do or error)
 - Should vote? (validate and do or error)

@@ -1,6 +1,8 @@
 Options +FollowSymLinks
 RewriteEngine On
 
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 RewriteRule ^agregar$ ./index.php?action=add-term [L]
 RewriteRule ^privacidad$ ./index.php?action=privacy [L]
 RewriteRule ^region/([0-9-a-z]+)$ ./index.php?action=show-region-terms&region-slug=$1 [L]
