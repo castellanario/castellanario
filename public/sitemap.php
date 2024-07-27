@@ -1,5 +1,9 @@
 <?php
-include '../config.php';
+require '../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+include '../db-setup.php';
+require '../functions.php';
 
 // SQL to fetch distinct term_slug
 $sql = "SELECT DISTINCT term_slug FROM castellanario";

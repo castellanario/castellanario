@@ -1,9 +1,9 @@
 <?php
-/**
- * A composerless dotenv approach which goes against almost all best practices
- * See my other github.com/mapamy project for better practices
- */
-include '../config.php';
+require '../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+include '../db-setup.php';
+require '../functions.php';
 
 // Bro, are we trying to add a term?
 if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POST['region']) > 2) and (strlen($_POST['term']) < 101) and (strlen($_POST['region']) < 41) and (strlen(normalize_whitespace($_POST['explanation'])) > 25) and (strlen(normalize_whitespace($_POST['example'])) > 25) and (strlen($_POST['explanation']) < 200) and (strlen($_POST['example']) < 200) and (!empty($_POST['g-recaptcha-response']))) {
@@ -24,16 +24,9 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
             echo("wtf?: " . $db_connection->error);
             exit;
         }
-        $headers = "From: " . SERVER_FROM_EMAIL . "\r\n";
-        $headers .= "Reply-To: " . SERVER_FROM_EMAIL . "\r\n";
-        $headers .= "Return-Path: " . SERVER_FROM_EMAIL . "\r\n";
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $headers .= "X-Priority: 1\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
         $subject = 'Nuevo término: ' . $term;
         $message = $region . '<br>' . $explanation . '<br>' . $example . '<hr><a href="https://castellanario.com/email-ops.php?id=' . $db_connection->insert_id . '&action=delete-this-sht&tokensito=' . EMAIL_OPS_SEKRET_TOKENSITO . '">BORRA ESTA PORQUERÍA PORFA</a>';
-        mail(ADMIN_EMAIL, $subject, $message, $headers);
+        send_email(ADMIN_EMAIL, $subject, $message);
         header('Location: /' . $term_slug . '/mas-recientes');
         exit;
     }

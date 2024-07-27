@@ -1,5 +1,9 @@
 <?php
-include __DIR__ . '/config.php';
+include __DIR__ . '/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+include __DIR__ . '/db-setup.php';
+include __DIR__ . '/functions.php';
 include __DIR__ . '/instatoken.php';
 
 // Get next queued and accepted word where uploaded = 0

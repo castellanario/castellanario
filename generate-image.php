@@ -1,5 +1,9 @@
 <?php
-include __DIR__ . '/config.php';
+include __DIR__ . '/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+include __DIR__ . '/db-setup.php';
+include __DIR__ . '/functions.php';
 
 // Select word by id ascending where imaged = 0
 $query = "SELECT * FROM `castellanario` WHERE `imaged` = 0 ORDER BY `id` ASC LIMIT 1";

@@ -1,6 +1,9 @@
 <?php
-// A composerless dotenv approach which goes against all best practices (see my other github.com/mapamy project for good practices)
-include '../config.php';
+require '../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+include '../db-setup.php';
+require '../functions.php';
 
 // sleep 4 secs in case anyone wanna try a million reqs to bruteforce my awesome token
 sleep(4);
