@@ -10,7 +10,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $id = $row['id'];
     $term = $row['term'];
-    $term_slug = $row['term_slug'];
+    $term_slug = str_replace('-', '', $row['term_slug']);
     $explanation = $row['explanation'];
     $region = $row['region'];
     $example = $row['example'];
