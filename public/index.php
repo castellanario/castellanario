@@ -432,6 +432,10 @@ if ($action === 'show-random') {
         'Gracias por tu opinión! :)',
         'Olee! Graciass!',
         'Me encanta tu opinión',
+        'Ufff, qué maravilla de voto!',
+        'Me encanta tu manera de votar, sigue!',
+        'Votas muy bien, ¿lo sabías?',
+        'Tú sí que sabes votar!!!'
     );
     // Pick a random
     $random_thank_u_msg = $random_thank_u_msgs[array_rand($random_thank_u_msgs)];
