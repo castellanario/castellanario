@@ -12,7 +12,7 @@ sleep(4);
 $id = isset($_GET['id']) ? intval($_GET['id']) : null;
 $tokensito = isset($_GET['tokensito']) ? $_GET['tokensito'] : null;
 
-if (!isset($_GET['action']) || !$id || !is_numeric($id) || $tokensito !== EMAIL_OPS_SEKRET_TOKENSITO) {
+if (!isset($_GET['action']) || !$id || !is_numeric($id) || $tokensito !== $_ENV['EMAIL_OPS_SEKRET_TOKENSITO']) {
     echo json_encode(['success' => false, 'message' => 'yo wtf?']);
     exit;
 }

@@ -25,8 +25,8 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
             exit;
         }
         $subject = 'Nuevo término: ' . $term;
-        $message = $region . '<br>' . $explanation . '<br>' . $example . '<hr><a href="https://castellanario.com/email-ops.php?id=' . $db_connection->insert_id . '&action=delete-this-sht&tokensito=' . EMAIL_OPS_SEKRET_TOKENSITO . '">BORRA ESTA PORQUERÍA PORFA</a>';
-        send_email(ADMIN_EMAIL, $subject, $message);
+        $message = $region . '<br>' . $explanation . '<br>' . $example . '<hr><a href="https://castellanario.com/email-ops.php?id=' . $db_connection->insert_id . '&action=delete-this-sht&tokensito=' . $_ENV['EMAIL_OPS_SEKRET_TOKENSITO'] . '">BORRA ESTA PORQUERÍA PORFA</a>';
+        send_email($_ENV['ADMIN_EMAIL'], $subject, $message);
         header('Location: /' . $term_slug . '/mas-recientes');
         exit;
     }
@@ -353,7 +353,7 @@ if ($action === 'show-random') {
 
                 <div
                         class="g-recaptcha"
-                        data-sitekey="<?php echo RECAPTCHA_PUBLIC_KEY; ?>">
+                        data-sitekey="<?php echo $_ENV['RECAPTCHA_PUBLIC_KEY']; ?>">
                 </div>
 
                 <div>
@@ -472,7 +472,7 @@ function verify_recaptcha($token)
 {
     $recaptcha_endpoint = "https://www.google.com/recaptcha/api/siteverify";
     $recaptcha_data = [
-        "secret" => RECAPTCHA_SECRET_KEY,
+        "secret" => $_ENV['RECAPTCHA_SECRET_KEY'],
         "response" => $token,
     ];
     $request_options = array(

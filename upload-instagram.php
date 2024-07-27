@@ -23,7 +23,7 @@ if ($result->num_rows > 0) {
     $caption = $example . "\n\n#" . $term_slug . " #" . $region . " \n\n---------------\nVisita la web del Castellanario, añade tus expresiones favoritas del castellano y vota las que más te gusten para que las publiquemos aquí!";
 
     // Upload to Instagram
-    $response = uploadToInstagram($imagePath, $caption, INSTAGRAM_ACCESS_TOKEN, INSTAGRAM_USER_ID);
+    $response = uploadToInstagram($imagePath, $caption, $_ENV['INSTAGRAM_ACCESS_TOKEN'], $_ENV['INSTAGRAM_USER_ID']);
 
     if (isset($response['id'])) {
         // Update uploaded = 1

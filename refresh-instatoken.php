@@ -7,7 +7,7 @@ include __DIR__ . '/functions.php';
 include __DIR__ . '/instatoken.php';
 
 // Refresh the Instagram access token
-$url = "https://graph.facebook.com/v20.0/oauth/access_token?grant_type=fb_exchange_token&client_id=" . FB_CLIENT_ID . "&client_secret=" . FB_CLIENT_SECRET . "&fb_exchange_token=" . INSTAGRAM_ACCESS_TOKEN;
+$url = "https://graph.facebook.com/v20.0/oauth/access_token?grant_type=fb_exchange_token&client_id=" . $_ENV['FB_CLIENT_ID'] . "&client_secret=" . $_ENV['FB_CLIENT_SECRET'] . "&fb_exchange_token=" . $_ENV['INSTAGRAM_ACCESS_TOKEN'];
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
