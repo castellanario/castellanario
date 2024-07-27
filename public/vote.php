@@ -38,11 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($db_connection->query($query)) {
         $_SESSION['votes'][] = $id;
-        $result = $db_connection->query("SELECT `upvotes`, `downvotes` FROM `castellanario` WHERE `id` = $id");
+        $result = $db_connection->query("SELECT `upvotes`, `downvotes`, `queued` FROM `castellanario` WHERE `id` = $id");
         $votes = $result->fetch_assoc();
 
-        // If upvotes are greater than 10, set queued = 1
-        if ($votes['upvotes'] > 10) {
+        // If upvotes are greater than 10 and the image was already generated, set queued = 1
+        $img = __DIR__ . '/images/' . $id . '.jpg';
+        if ($votes['upvotes'] > 0 && file_exists($img) && $votes['queued'] == 0) {
             $db_connection->query("UPDATE `castellanario` SET `queued` = 1 WHERE `id` = $id");
 
             // Send myself an email to review the word before uploading
@@ -56,4 +57,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => false, 'message' => $db_connection->error]);
     }
 }
-?>
