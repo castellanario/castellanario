@@ -1,81 +1,32 @@
 <?php
+require '../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+include '../db-setup.php';
+require '../functions.php';
 
-include './config.php';
+// Bro, are we trying to add a term?
+if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POST['region']) > 2) and (strlen($_POST['term']) < 101) and (strlen($_POST['region']) < 41) and (strlen(normalize_whitespace($_POST['explanation'])) > 25) and (strlen(normalize_whitespace($_POST['example'])) > 25) and (strlen($_POST['explanation']) < 200) and (strlen($_POST['example']) < 200) and (!empty($_POST['g-recaptcha-response']))) {
 
-/* Database schema
+    if (verify_recaptcha($_POST["g-recaptcha-response"])) {
 
-CREATE TABLE `castellanario` (
-  `id` bigint UNSIGNED NOT NULL,
-  `term` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `term_slug` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `region` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `region_slug` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `upvotes` bigint UNSIGNED NOT NULL DEFAULT '0',
-  `downvotes` bigint UNSIGNED NOT NULL DEFAULT '0',
-  `flags` int UNSIGNED NOT NULL DEFAULT '5',
-  `explanation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `example` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+        // Espera 2 segundillos anda
+        sleep(2);
 
-ALTER TABLE `castellanario`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `term` (`term`),
-  ADD KEY `term_slug` (`term_slug`),
-  ADD KEY `region` (`region`),
-  ADD KEY `region_slug` (`region_slug`),
-  ADD KEY `upvotes` (`upvotes`),
-  ADD KEY `downvotes` (`downvotes`),
-  ADD KEY `posted` (`posted`);
+        $term = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['term'])));
+        $term_slug = slugify($_POST['term']);
+        $region = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['region'])));
+        $region_slug = slugify($_POST['region']);
+        $explanation = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['explanation'])));
+        $example = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['example'])));
 
-ALTER TABLE `castellanario`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
-COMMIT;
-
-*/
-
-/* Connect to database */
-
-$db_connection = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD);
-
-if ($db_connection->connect_error) {
-    die('Connection failed: ' . $db_connection->connect_error);
-}
-
-$db_connection->select_db(DB_NAME);
-
-// Set charset
-$db_connection->set_charset('utf8mb4');
-
-/* Perform POST actions
-- Should post a new term? (validate and do or error)
-- Should vote? (validate and do or error)
-*/
-
-// Are we trying to add a term?
-if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POST['region']) > 2) and (strlen($_POST['term']) < 101) and (strlen($_POST['region']) < 41) and (strlen(normalize_whitespace($_POST['explanation'])) > 25) and (strlen(normalize_whitespace($_POST['example'])) > 25) and (!empty($_POST['g-recaptcha-response']))) {
-
-    $recaptcha_is_valid = verify_recaptcha($_POST["g-recaptcha-response"]);
-
-    $term = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['term'])));
-    $term_slug = slugify($_POST['term']);
-    $region = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['region'])));
-    $region_slug = slugify($_POST['region']);
-    $explanation = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['explanation'])));
-    $example = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['example'])));
-
-    if ($recaptcha_is_valid) {
         if (!$db_connection->query("INSERT INTO `castellanario` (`term`, `term_slug`, `region`, `region_slug`, `explanation`, `example`) VALUES ('" . $term . "', '" . $term_slug . "', '" . $region . "', '" . $region_slug . "', '" . $explanation . "', '" . $example . "')")) {
-            echo("Error description: " . $db_connection->error);
+            echo("wtf?: " . $db_connection->error);
             exit;
         }
-        $headers = "From: info@castellanario.com\r\n";
-        $headers.= "MIME-Version: 1.0\r\n";
-        $headers.= "Content-Type: text/html; charset=UTF-8\r\n";
-        $headers.= "X-Priority: 1\r\n";
         $subject = 'Nuevo término: ' . $term;
-        $message = $region . '<br>' . $explanation . '<br>' . $example;
-        mail('castellanario@gmail.com', $subject, $message, $headers);
+        $message = $region . '<br>' . $explanation . '<br>' . $example . '<hr><a href="https://castellanario.com/email-ops.php?id=' . $db_connection->insert_id . '&action=delete-this-sht&tokensito=' . $_ENV['EMAIL_OPS_SEKRET_TOKENSITO'] . '">BORRA ESTA PORQUERÍA PORFA</a>';
+        send_email($_ENV['ADMIN_EMAIL'], $subject, $message);
         header('Location: /' . $term_slug . '/mas-recientes');
         exit;
     }
@@ -163,7 +114,7 @@ if ($action === 'show-random') {
 /* Print HTML header with very simple CSS styles */
 ?>
 
-    <html>
+    <html lang="es">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -225,7 +176,7 @@ if ($action === 'show-random') {
                 font-family: SpecialElite, sans-serif;
             }
 
-            h1 span{
+            h1 span {
                 color: #999;
             }
 
@@ -269,8 +220,26 @@ if ($action === 'show-random') {
                 letter-spacing: 0.1rem;
             }
 
-            .tag:hover{
+            .tag:hover {
                 background-color: #111;
+            }
+
+            .footersito {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                flex-direction: row;
+            }
+
+            .footersito .parriba,
+            .footersito .pabajo {
+                cursor: pointer;
+                opacity: 0.5;
+            }
+
+            .footersito .parriba:hover,
+            .footersito .pabajo:hover {
+                opacity: 1;
             }
 
             .privacy {
@@ -285,30 +254,34 @@ if ($action === 'show-random') {
                 text-align: center;
             }
 
-            @media (min-width: 800px){
+            @media (min-width: 800px) {
                 body {
                     padding: 4rem;
                     font-size: 18px;
                 }
+
                 header {
                     flex-direction: row;
                     justify-content: space-between;
                     margin-bottom: 6rem;
                 }
+
                 h2 {
                     font-family: SpecialElite, sans-serif;
                     font-size: 40px;
                 }
             }
 
-            @media (min-width: 1100px){
+            @media (min-width: 1100px) {
                 body {
                     padding: 6rem;
                     font-size: 20px;
                 }
+
                 header {
                     margin-bottom: 10rem;
                 }
+
                 h2 {
                     font-family: SpecialElite, sans-serif;
                     font-size: 60px;
@@ -320,7 +293,11 @@ if ($action === 'show-random') {
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-J2JFKPHKCZ"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
             gtag('js', new Date());
             gtag('config', 'G-J2JFKPHKCZ');
         </script>
@@ -364,19 +341,19 @@ if ($action === 'show-random') {
 
                 <div>
                     <label for="explanation">Explicación</label>
-                    <textarea required minlength="40" name="explanation" id="explanation"
+                    <textarea required minlength="40" maxlength="190" name="explanation" id="explanation"
                               placeholder="Ej: Dícese de la persona que no sabe ni donde tiene la cara."></textarea>
                 </div>
 
                 <div>
                     <label for="example">Ejemplo</label>
-                    <textarea required minlength="40" name="example" id="example"
+                    <textarea required minlength="40" maxlength="190" name="example" id="example"
                               placeholder="Ej: Kiyo Paco, no veas si estás empanao hoy colega...!"></textarea>
                 </div>
 
                 <div
                         class="g-recaptcha"
-                        data-sitekey="<?php echo RECAPTCHA_PUBLIC_KEY; ?>">
+                        data-sitekey="<?php echo $_ENV['RECAPTCHA_PUBLIC_KEY']; ?>">
                 </div>
 
                 <div>
@@ -395,28 +372,44 @@ if ($action === 'show-random') {
                 } else {
                     $title_html = $term_data['term'];
                 }
-                $region_html = '';
+                $footersito_html = '';
                 if ($action !== 'show-region-terms') {
-                    $region_html = '<p><a class="tag" href="/region/' . $term_data['region_slug'] . '">' . $term_data['region'] . '</a></p>';
+                    $footersito_html = '<a class="tag" href="/region/' . $term_data['region_slug'] . '">' . $term_data['region'] . '</a>';
                 }
+                $footersito_html .= '<span id="votos-' . $term_data['id'] . '"><img src="/assets/parriba.png" class="parriba" data-id="' . $term_data['id'] . '" alt="Bueno"/> <img src="/assets/pabajo.png" class="pabajo" data-id="' . $term_data['id'] . '" alt="Malo"/></span>';
                 echo '
             <li>
                 <h2>' . $title_html . '</h2>
                 <p>' . $term_data['explanation'] . '</p>
                 <p>' . $term_data['example'] . '</p>
-                ' . $region_html . '
+                <p class="footersito">' . $footersito_html . '</p>
             </li>
             ';
             }
             echo '</ul>';
             break;
-        case 'privacy':
+        case 'privacy-terms':
             ?>
             <div class="privacy">
                 <h2>Política de privacidad</h2>
-                <p>Aquí puedes enterarte de todo.</p>
+                <p>La sede de castellanario está sita en 12 Grimmauld Place, Londres, pero es mejor contactar por email
+                    para cualquier problema.</p>
+                <p>El propietario de castellanario es <a href="https://github.com/alvarofranz">Alvaro Franz</a>.</p>
+                <p>Se puede contactar en castellanario@gmail.com</p>
+                <p>Los datos personales recogidos son los mínimos necesarios para el funcionamiento de la web.</p>
+                <p>Cookies de Google Analytics, pa ver las visitas, aunque tampoco me importa mucho.</p>
+                <p>No se recogen datos personales, puedes publicar expresiones anónimas.</p>
+                <p>No pongas ningún dato privado, es ilegal en esta web, solo cosas españolas o inventadas que no
+                    identifiquen ni personas ni perros ni gatos, nada que inclumpla la ley.</p>
+                <h2>Más cositas...</h2>
+                <p>Al publicar una expresión estás cediendo todos los derechos de explotación, como por ejemplo para
+                    ponera en una imagen y subirla a instagram, entre otros.</p>
+                <p>Si algo de esto not e gusta, no tienes derecho a entrar en esta web.</p>
             </div>
-        <?php
+            <?php
+            break;
+        default:
+            redirect_to_home();
     }
 
 
@@ -424,9 +417,52 @@ if ($action === 'show-random') {
 
     ?>
     <footer>
-        <a href="/privacidad">Privacidad</a> - <a href="https://www.instagram.com/castellanario">Insta</a> - <a
-                href="https://twitter.com/castellanario">Twitter</a>
+        <a href="/privacidad-y-condiciones">Privacidad y Condiciones</a> - <a
+                href="https://www.instagram.com/castellanario">Instagram</a>
     </footer>
+    <?php
+    $random_thank_u_msgs = array(
+        'Gracias por tu opinión! :)',
+        'Olee! Graciass!',
+        'Me encanta tu opinión',
+        'Ufff, qué maravilla de voto!',
+        'Me encanta tu manera de votar, sigue!',
+        'Votas muy bien, ¿lo sabías?',
+        'Tú sí que sabes votar!!!'
+    );
+    // Pick a random
+    $random_thank_u_msg = $random_thank_u_msgs[array_rand($random_thank_u_msgs)];
+    ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.parriba, .pabajo').forEach(element => {
+                element.addEventListener('click', async () => {
+                    const id = element.getAttribute('data-id');
+                    const action = element.classList.contains('parriba') ? 'upvote' : 'downvote';
+                    const feedbackElement = document.getElementById(`votos-${id}`);
+                    feedbackElement.innerHTML = '<?php echo $random_thank_u_msg; ?>';
+
+                    try {
+                        const response = await fetch('/vote.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: new URLSearchParams({id, action})
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            feedbackElement.innerHTML = `Parriba: ${data.upvotes}, Pabajo: ${data.downvotes}`;
+                        } else {
+                            feedbackElement.innerHTML = data.message || 'wtf?';
+                        }
+                    } catch (error) {
+                        feedbackElement.innerHTML = 'WTF: ' + error.message;
+                    }
+                });
+            });
+        });
+    </script>
     </body>
     </html>
 
@@ -436,14 +472,14 @@ function verify_recaptcha($token)
 {
     $recaptcha_endpoint = "https://www.google.com/recaptcha/api/siteverify";
     $recaptcha_data = [
-        "secret" => RECAPTCHA_SECRET_KEY,
+        "secret" => $_ENV['RECAPTCHA_SECRET_KEY'],
         "response" => $token,
     ];
     $request_options = array(
         "http" => array(
             "header" => "Content-type: application/x-www-form-urlencoded\r\n",
             "method" => "POST",
-            "content" => http_build_query($recaptcha_data), # Agregar el contenido definido antes
+            "content" => http_build_query($recaptcha_data),
         ),
     );
     $contexto = stream_context_create($request_options);
