@@ -1,0 +1,12 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+RewriteRule ^agregar$ ./index.php?action=add-term [L]
+RewriteRule ^privacidad-condiciones$ ./index.php?action=privacy-terms [L]
+RewriteRule ^region/([0-9-a-z]+)$ ./index.php?action=show-region-terms&region-slug=$1 [L]
+RewriteRule ^region/([0-9-a-z]+)/([-a-z]+)$ ./index.php?action=show-region-terms&region-slug=$1&order=$2 [L]
+RewriteRule ^([0-9-a-z]+)$ ./index.php?action=show-single-term&term-slug=$1 [L]
+RewriteRule ^([0-9-a-z]+)/([-a-z]+)$ ./index.php?action=show-single-term&term-slug=$1&order=$2 [L]
