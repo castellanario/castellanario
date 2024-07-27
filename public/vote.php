@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
             $headers .= "X-Priority: 1\r\n";
             $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
-            $message = '<p>La palabra con ID ' . $id . ' ha superado los 10 votos positivos. Revisala antes de subirla a la web.</p><p><img alt="imagen" src="https://castellanario.com/images/' . $id . '.jpg"></p><p><a href="https://castellanario.com/email-ops.php?id=' . $id . '&action=ok-image-upload&tokensito=' . UPLOAD_REVIEW_TOKEN . '"</p>';
+            $message = '<p>La palabra con ID ' . $id . ' ha superado los 10 votos positivos. Revisala antes de subirla a la web.</p><p><img alt="imagen" src="https://castellanario.com/images/' . $id . '.jpg"></p><p><a href="https://castellanario.com/email-ops.php?id=' . $id . '&action=ok-image-upload&tokensito=' . EMAIL_OPS_SEKRET_TOKENSITO . '"</p>';
 
             mail(ADMIN_EMAIL, 'Nueva palabra para revisar', $message, $headers);
         }
