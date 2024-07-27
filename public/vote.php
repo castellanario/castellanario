@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db_connection->query("UPDATE `castellanario` SET `queued` = 1 WHERE `id` = $id");
 
             // Send myself an email to review the word before uploading
-            $message = '<p>La palabra con ID ' . $id . ' ha superado los 10 votos positivos. Revisala antes de subirla a la web.</p><p><img alt="imagen" src="https://castellanario.com/images/' . $id . '.jpg"></p><p><a href="https://castellanario.com/email-ops.php?id=' . $id . '&action=ok-image-upload&tokensito=' . $_ENV['EMAIL_OPS_SEKRET_TOKENSITO'] . '"</p>';
+            $message = '<p>La palabra con ID ' . $id . ' ha superado los 10 votos positivos. Revisala antes de subirla a la web.</p><p><img alt="imagen" src="https://castellanario.com/images/' . $id . '.jpg"></p><p><a href="https://castellanario.com/email-ops.php?id=' . $id . '&action=ok-image-upload&tokensito=' . $_ENV['EMAIL_OPS_SEKRET_TOKENSITO'] . '">SII SUBELA, CLARO QUE SIII!</a></p>';
 
             send_email($_ENV['ADMIN_EMAIL'], 'Nuevo instapost para revisar - ' . uniqid(), $message);
         }
