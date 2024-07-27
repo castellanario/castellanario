@@ -21,10 +21,13 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
             echo("wtf?: " . $db_connection->error);
             exit;
         }
-        $headers = "From: info@castellanario.com\r\n";
+        $headers = "From: " . SERVER_FROM_EMAIL . "\r\n";
+        $headers .= "Reply-To: " . SERVER_FROM_EMAIL . "\r\n";
+        $headers .= "Return-Path: " . SERVER_FROM_EMAIL . "\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
         $headers .= "X-Priority: 1\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
         $subject = 'Nuevo término: ' . $term;
         $message = $region . '<br>' . $explanation . '<br>' . $example;
         mail(ADMIN_EMAIL, $subject, $message, $headers);
