@@ -17,10 +17,11 @@ if ($result->num_rows > 0) {
     $term_slug = str_replace('-', '', $row['term_slug']);
     $explanation = $row['explanation'];
     $region = $row['region'];
+    $region_slug = str_replace('-', '', $row['region_slug']);
     $example = $row['example'];
 
     $imagePath = 'https://castellanario.com/images/' . $id . '.jpg';
-    $caption = $example . "\n\n#" . $term_slug . " #" . $region . " \n\n---------------\nVisita la web del Castellanario, añade tus expresiones favoritas del castellano y vota las que más te gusten para que las publiquemos aquí!";
+    $caption = "Ejemplo de uso:\n" . $example . "\n\n#" . $term_slug . " #" . $region_slug . " \n\n---------------\nVisita la web del Castellanario, añade tus expresiones favoritas del castellano y vota las que más te gusten para que las publiquemos aquí!";
 
     // Upload to Instagram
     $response = uploadToInstagram($imagePath, $caption, INSTAGRAM_ACCESS_TOKEN, $_ENV['INSTAGRAM_USER_ID']);
