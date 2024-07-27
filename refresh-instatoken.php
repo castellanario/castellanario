@@ -20,7 +20,7 @@ if (curl_errno($ch)) {
     // Update instatoken.php
     $file = fopen('./instatoken.php', 'w');
     fwrite($file, "<?php\n");
-    fwrite($file, "const INSTAGRAM_ACCESS = '$newToken';\n");
+    fwrite($file, "const INSTAGRAM_ACCESS_TOKEN = '$newToken';\n");
     fclose($file);
 }
 
