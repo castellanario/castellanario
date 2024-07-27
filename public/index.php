@@ -6,7 +6,7 @@
 include '../config.php';
 
 // Bro, are we trying to add a term?
-if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POST['region']) > 2) and (strlen($_POST['term']) < 101) and (strlen($_POST['region']) < 41) and (strlen(normalize_whitespace($_POST['explanation'])) > 25) and (strlen(normalize_whitespace($_POST['example'])) > 25) and (!empty($_POST['g-recaptcha-response']))) {
+if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POST['region']) > 2) and (strlen($_POST['term']) < 101) and (strlen($_POST['region']) < 41) and (strlen(normalize_whitespace($_POST['explanation'])) > 25) and (strlen(normalize_whitespace($_POST['example'])) > 25) and (strlen($_POST['explanation']) < 200) and (strlen($_POST['example']) < 200) and (!empty($_POST['g-recaptcha-response']))) {
 
     if (verify_recaptcha($_POST["g-recaptcha-response"])) {
 
@@ -348,13 +348,13 @@ if ($action === 'show-random') {
 
                 <div>
                     <label for="explanation">Explicación</label>
-                    <textarea required minlength="40" name="explanation" id="explanation"
+                    <textarea required minlength="40" maxlength="190" name="explanation" id="explanation"
                               placeholder="Ej: Dícese de la persona que no sabe ni donde tiene la cara."></textarea>
                 </div>
 
                 <div>
                     <label for="example">Ejemplo</label>
-                    <textarea required minlength="40" name="example" id="example"
+                    <textarea required minlength="40" maxlength="190" name="example" id="example"
                               placeholder="Ej: Kiyo Paco, no veas si estás empanao hoy colega...!"></textarea>
                 </div>
 
