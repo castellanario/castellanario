@@ -10,6 +10,9 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
 
     if (verify_recaptcha($_POST["g-recaptcha-response"])) {
 
+        // Espera 2 segundillos anda
+        sleep(2);
+
         $term = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['term'])));
         $term_slug = slugify($_POST['term']);
         $region = $db_connection->real_escape_string(strip_tags(normalize_whitespace($_POST['region'])));
@@ -29,7 +32,7 @@ if (isset($_POST['add-term']) and (strlen($_POST['term']) > 2) and (strlen($_POS
         $headers .= "X-Priority: 1\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
         $subject = 'Nuevo término: ' . $term;
-        $message = $region . '<br>' . $explanation . '<br>' . $example;
+        $message = $region . '<br>' . $explanation . '<br>' . $example . '<hr><a href="https://castellanario.com/email-ops.php?id=' . $db_connection->insert_id . '&action=delete-this-sht&tokensito=' . EMAIL_OPS_SEKRET_TOKENSITO . '">BORRA ESTA PORQUERÍA PORFA</a>';
         mail(ADMIN_EMAIL, $subject, $message, $headers);
         header('Location: /' . $term_slug . '/mas-recientes');
         exit;
@@ -424,6 +427,15 @@ if ($action === 'show-random') {
         <a href="/privacidad-y-condiciones">Privacidad y Condiciones</a> - <a
                 href="https://www.instagram.com/castellanario">Instagram</a>
     </footer>
+    <?php
+    $random_thank_u_msgs = array(
+        'Gracias por tu opinión! :)',
+        'Olee! Graciass!',
+        'Me encanta tu opinión',
+    );
+    // Pick a random
+    $random_thank_u_msg = $random_thank_u_msgs[array_rand($random_thank_u_msgs)];
+    ?>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.parriba, .pabajo').forEach(element => {
@@ -431,6 +443,7 @@ if ($action === 'show-random') {
                     const id = element.getAttribute('data-id');
                     const action = element.classList.contains('parriba') ? 'upvote' : 'downvote';
                     const feedbackElement = document.getElementById(`votos-${id}`);
+                    feedbackElement.innerHTML = '<?php echo $random_thank_u_msg; ?>';
 
                     try {
                         const response = await fetch('/vote.php', {
